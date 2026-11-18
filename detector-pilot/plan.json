@@ -1,0 +1,85 @@
+{
+ "date": "2026-11-18",
+ "name": "Detector pilot",
+ "purpose": "First test of a general AI-text detector trained on true origin (who produced the wording), not on Detector A scores. Question: can it catch humanized AI text that Detector A misses while leaving human text alone?",
+ "written_before_results_at": "2026-11-18, while the Wikipedia fetch and matched-AI generation were still running; no Detector had been trained or scored",
+ "baselines_measured_before_training": {
+  "joint_holdout_detector_a": "AUC by true origin 0.9588; flags 2/75 human (score > 0), catches 70/75 AI",
+  "joint_holdout_jd_1h_nf": "AUC by true origin 0.9744",
+  "humanized_set_detector_a_flags_score_above_0": "AI originals 22/30, Humanizer B rewrites 4/30, Rewriter greedy rewrites 11/30"
+ },
+ "labels": {
+  "human_0": [
+   "Wikipedia paragraphs from revisions saved on or before 2021-12-31 (fetch_wiki_human.py; Level-4 vital articles, 48 per area, every joint-holdout page excluded)",
+   "Master sources with source_type project_gutenberg_public_domain"
+  ],
+  "ai_1": [
+   "ai_raw_wiki: paragraphs on the same Wikipedia titles written by llama3, qwen2.5:14b and the unadapted Qwen3-1.7B, each aimed at the word count of one human paragraph (gen_ai_matched.py)",
+   "ai_humanized_rewriter_wiki: the live Rewriter's rewrite of one of those per article",
+   "ai_raw_qwen3: master sources with collection_kind detector_a_only_import",
+   "ai_raw_chapter: master sources with source_type ai_written_chapter_user_declared or ai_written_book_user_declared",
+   "ai_raw_agent: master sources with source_origin agent_authored_textbook",
+   "ai_rewrite_base_qwen3: master sources with source_origin unadapted_base_qwen3 or unadapted_base_qwen3_academic_register",
+   "ai_humanized_rewriter: master sources with source_origin trained_qwen3_humanizer",
+   "ai_humanized_humanizer_b: collected or unassigned master outputs with humanization_source Humanizer B whose source is AI-origin",
+   "ai_humanized_humanizer_b_of_human: the same for Gutenberg sources; labelled AI because an AI rewriter produced the wording"
+  ],
+  "excluded": [
+   "Master sources with no origin evidence (no collection_kind, source_type or source_origin) and their outputs",
+   "The 5 synthetic_textbook_research sources",
+   "Texts under 40 words",
+   "Every text in the 30 source families of dataset-runs/rewriter-vs-humanizer-b-20261111 (evaluation set)",
+   "The 200 texts of the frozen Model 2 test split",
+   "Any text matching the joint holdout (verify.py must report 0 matches)",
+   "Normalized duplicates (one kept); a text that appears under both labels is dropped entirely"
+  ]
+ },
+ "splits": {
+  "unit": "family: one Wikipedia article (its human, AI and rewritten paragraphs together), or one existing master group_id (a source with all its rewrites)",
+  "wikipedia": "bucket = int(sha256(str(pageid))[:8], 16) % 20: 0-1 detector-test (10%), 2-4 validation (15%), 5-19 train (75%)",
+  "master": "bucket = int(sha256(group_id)[:8], 16) % 10: 1 validation, otherwise train",
+  "train_caps_by_type_lowest_sha256_first": {
+   "ai_raw_wiki": "all", "ai_humanized_rewriter_wiki": "all", "ai_raw_agent": "all",
+   "ai_raw_chapter": 700, "ai_raw_qwen3": 500, "ai_rewrite_base_qwen3": 300, "ai_humanized_rewriter": 400,
+   "ai_humanized_humanizer_b": 1200, "ai_humanized_humanizer_b_of_human": 400, "human": "all"
+  },
+  "validation_caps": "none"
+ },
+ "encoder": {"model": "microsoft/deberta-v3-base", "revision": "8ccc9b6f36199bec6961081d44eb72fb3f7353f3"},
+ "architecture": "Same as Scorer-1H: [CLS] -> fresh dense+tanh pooler -> dropout 0.1 -> linear(1); reference SentencePiece tokenizer (model2-encoder-finetune-20261101/common.py)",
+ "training": {
+  "epochs": 3, "batch_size": 16, "drop_last": true, "optimizer": "AdamW", "learning_rate": 2e-05, "weight_decay": 0.01,
+  "adam_eps": 1e-08, "warmup_fraction": 0.1, "schedule": "linear warmup then linear decay to 0", "gradient_clip_norm": 1.0,
+  "max_length": 320, "precision": "float32", "device": "mps", "gradient_checkpointing": true,
+  "loss": "Binary cross-entropy on the logit with hard 0/1 origin labels, unweighted",
+  "sampling": "Uniform reshuffle of all training texts each epoch",
+  "seed": 3407, "seeds_run": 1,
+  "validation_during_training": "End of each epoch, for curves only",
+  "checkpoint_selection": "None: final weights after the fixed budget are the evaluated model"
+ },
+ "threshold": "Fixed once, from validation only: the lowest score t such that at most 5% of validation human texts score above t. A text is flagged when its score is above t. The same t is used on every test set.",
+ "evaluation_order": [
+  "1. validation: AUC, threshold t, catch rate by AI type",
+  "2. detector-test (held-out Wikipedia articles): human false-alarm rate, catch rate by AI type",
+  "3. humanized set (rewriter-vs-humanizer-b-20261111): flags on 30 AI originals, 30 Humanizer B rewrites, 30 Rewriter greedy rewrites, 28 best-of-4 picks, against Detector A's own flags (score > 0)",
+  "4. unseen human source: about 200 arXiv abstracts submitted before 2022 (fetch_arxiv_human.py), never used in training; false-alarm rate",
+  "5. joint holdout, once, last: AUC by origin, human flagged, AI caught, against Detector A"
+ ],
+ "verdict_frozen_before_results": {
+  "positive_only_if_all": [
+   "joint holdout: at most 7 of 75 human paragraphs flagged, and at least 60 of 75 AI paragraphs caught",
+   "humanized set: at least 15 of 30 Humanizer B rewrites caught (Detector A 4) and at least 20 of 30 Rewriter greedy rewrites caught (Detector A 11)",
+   "detector-test: at most 10% of held-out Wikipedia human paragraphs flagged",
+   "unseen human source: at most 15% of arXiv abstracts flagged"
+  ],
+  "otherwise": "Not a positive result. Everything is reported either way; nothing is retuned against the humanized set, the arXiv set or the joint holdout."
+ },
+ "known_limits_before_results": [
+  "One seed, one recipe.",
+  "Human training text comes from two sources (Wikipedia, five Gutenberg authors). The arXiv set is the only check on other human writing.",
+  "Humanizer B and the Rewriter are both seen in training (other families). Nothing here tests a humanizer the Detector has never seen.",
+  "Local generators are small or mid-size open models; the joint-holdout AI half (claude-opus-5-5) is the main check on a stronger generator.",
+  "Chapter and book sources are AI-written by the user's declaration, not independently verified."
+ ],
+ "production_changed": false
+}

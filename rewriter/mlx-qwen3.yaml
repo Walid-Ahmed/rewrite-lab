@@ -1,0 +1,29 @@
+# Run: mlx_lm.lora --config mlx-qwen3.yaml
+model: mlx-community/Qwen3-1.7B-4bit
+train: true
+fine_tune_type: lora
+data: mlx-data
+adapter_path: mlx-qwen3-humanizer
+seed: 3407
+batch_size: 1
+num_layers: 8
+# With batch size 1, 300 microbatches is about 2.8 passes over 107 examples.
+iters: 300
+grad_accumulation_steps: 4
+learning_rate: 0.0001
+max_seq_length: 2048
+grad_checkpoint: true
+mask_prompt: true
+steps_per_report: 10
+steps_per_eval: 50
+val_batches: -1
+# Save numbered adapter checkpoints every 50 iterations, plus final weights.
+save_every: 50
+lora_parameters:
+  rank: 8
+  scale: 16.0
+  dropout: 0.0
+
+# Training metrics and configuration only; dataset text stays local.
+report_to: wandb
+project_name: qwen3-humanizer

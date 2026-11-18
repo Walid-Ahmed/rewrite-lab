@@ -1,0 +1,217 @@
+{
+ "model_sha256": "37b59a9ab9a10c1959efef8812fe74dbfd686ebdad7c253a5109285b62a4c5f8",
+ "threshold": {
+  "value": 0.9709858298301697,
+  "rule": "Fixed once, from validation only: the lowest score t such that at most 5% of validation human texts score above t. A text is flagged when its score is above t. The same t is used on every test set.",
+  "validation_human_texts": 522,
+  "allowed_above": 26
+ },
+ "validation": {
+  "auc": 0.9946,
+  "flagged_by_type": {
+   "ai_humanized_humanizer_b": {
+    "flagged": 336,
+    "of": 336,
+    "rate": 1.0
+   },
+   "ai_humanized_humanizer_b_of_human": {
+    "flagged": 79,
+    "of": 109,
+    "rate": 0.7248
+   },
+   "ai_humanized_rewriter": {
+    "flagged": 61,
+    "of": 64,
+    "rate": 0.9531
+   },
+   "ai_humanized_rewriter_wiki": {
+    "flagged": 78,
+    "of": 78,
+    "rate": 1.0
+   },
+   "ai_raw_agent": {
+    "flagged": 12,
+    "of": 12,
+    "rate": 1.0
+   },
+   "ai_raw_chapter": {
+    "flagged": 76,
+    "of": 77,
+    "rate": 0.987
+   },
+   "ai_raw_qwen3": {
+    "flagged": 300,
+    "of": 300,
+    "rate": 1.0
+   },
+   "ai_raw_wiki": {
+    "flagged": 248,
+    "of": 248,
+    "rate": 1.0
+   },
+   "ai_rewrite_base_qwen3": {
+    "flagged": 139,
+    "of": 148,
+    "rate": 0.9392
+   },
+   "human_gutenberg": {
+    "flagged": 2,
+    "of": 30,
+    "rate": 0.0667
+   },
+   "human_wiki": {
+    "flagged": 24,
+    "of": 492,
+    "rate": 0.0488
+   }
+  }
+ },
+ "detector_test": {
+  "auc": 0.9988,
+  "flagged_by_type": {
+   "ai_humanized_rewriter_wiki": {
+    "flagged": 32,
+    "of": 33,
+    "rate": 0.9697
+   },
+   "ai_raw_wiki": {
+    "flagged": 104,
+    "of": 104,
+    "rate": 1.0
+   },
+   "human_wiki": {
+    "flagged": 11,
+    "of": 205,
+    "rate": 0.0537
+   }
+  },
+  "flagged_by_generator": {
+   "ai_humanized_rewriter_wiki:llama3": {
+    "flagged": 8,
+    "of": 8,
+    "rate": 1.0
+   },
+   "ai_humanized_rewriter_wiki:qwen2.5:14b": {
+    "flagged": 14,
+    "of": 15,
+    "rate": 0.9333
+   },
+   "ai_humanized_rewriter_wiki:qwen3-1.7b": {
+    "flagged": 10,
+    "of": 10,
+    "rate": 1.0
+   },
+   "ai_raw_wiki:llama3": {
+    "flagged": 35,
+    "of": 35,
+    "rate": 1.0
+   },
+   "ai_raw_wiki:qwen2.5:14b": {
+    "flagged": 34,
+    "of": 34,
+    "rate": 1.0
+   },
+   "ai_raw_wiki:qwen3-1.7b": {
+    "flagged": 35,
+    "of": 35,
+    "rate": 1.0
+   }
+  }
+ },
+ "humanized_set": {
+  "ai_original": {
+   "detector": {
+    "flagged": 30,
+    "of": 30,
+    "rate": 1.0
+   },
+   "detector_a_score_above_0": {
+    "flagged": 22,
+    "of": 30,
+    "rate": 0.7333
+   }
+  },
+  "humanizer_b_rewrite": {
+   "detector": {
+    "flagged": 30,
+    "of": 30,
+    "rate": 1.0
+   },
+   "detector_a_score_above_0": {
+    "flagged": 4,
+    "of": 30,
+    "rate": 0.1333
+   }
+  },
+  "rewriter_greedy": {
+   "detector": {
+    "flagged": 30,
+    "of": 30,
+    "rate": 1.0
+   },
+   "detector_a_score_above_0": {
+    "flagged": 11,
+    "of": 30,
+    "rate": 0.3667
+   }
+  },
+  "rewriter_best_of_4_pick": {
+   "detector": {
+    "flagged": 28,
+    "of": 28,
+    "rate": 1.0
+   },
+   "detector_a_score_above_0": null
+  }
+ },
+ "arxiv_human": {
+  "all": {
+   "flagged": 171,
+   "of": 188,
+   "rate": 0.9096
+  },
+  "by_category": {
+   "cs.CY": {
+    "flagged": 25,
+    "of": 26,
+    "rate": 0.9615
+   },
+   "cs.HC": {
+    "flagged": 25,
+    "of": 27,
+    "rate": 0.9259
+   },
+   "cs.SE": {
+    "flagged": 15,
+    "of": 16,
+    "rate": 0.9375
+   },
+   "econ.GN": {
+    "flagged": 25,
+    "of": 28,
+    "rate": 0.8929
+   },
+   "physics.ed-ph": {
+    "flagged": 18,
+    "of": 25,
+    "rate": 0.72
+   },
+   "physics.soc-ph": {
+    "flagged": 20,
+    "of": 22,
+    "rate": 0.9091
+   },
+   "q-bio.PE": {
+    "flagged": 17,
+    "of": 18,
+    "rate": 0.9444
+   },
+   "stat.AP": {
+    "flagged": 26,
+    "of": 26,
+    "rate": 1.0
+   }
+  },
+  "median_score": 0.9996
+ }
+}

@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv*/
+.DS_Store
+data/
+dataset/
+mlx-data/
+detector-seed-*/
+*.pt
+*.safetensors
+wandb/

@@ -1,0 +1,43 @@
+{
+ "model_sha256": "37b59a9ab9a10c1959efef8812fe74dbfd686ebdad7c253a5109285b62a4c5f8",
+ "threshold": 0.9709858298301697,
+ "detector": {
+  "auc": 0.8661,
+  "human": {
+   "flagged": 16,
+   "of": 75,
+   "rate": 0.2133
+  },
+  "ai": {
+   "flagged": 56,
+   "of": 75,
+   "rate": 0.7467
+  }
+ },
+ "detector_a_score_above_0": {
+  "auc": 0.9588,
+  "human": {
+   "flagged": 2,
+   "of": 75,
+   "rate": 0.0267
+  },
+  "ai": {
+   "flagged": 70,
+   "of": 75,
+   "rate": 0.9333
+  }
+ },
+ "ai_missed_by_detector_a_caught_by_detector": 3,
+ "by_domain_human_flagged": {
+  "agriculture": 1,
+  "computing": 6,
+  "history": 1,
+  "labor_economics": 1,
+  "law_governance": 0,
+  "operations": 2,
+  "psychology_education": 0,
+  "public_economics": 0,
+  "public_health": 2,
+  "survey_methods": 3
+ }
+}
